@@ -1,4 +1,7 @@
 import { observable, action } from "mobx";
+import * as firebase from 'firebase'
+import Expo from "expo"
+import { Facebook } from 'expo';
 
 class LoginStore {
   @observable email = "";
@@ -6,6 +9,9 @@ class LoginStore {
   @observable isValid = false;
   @observable emailError = "";
   @observable passwordError = "";
+  @observable name = '';
+  @observable photoUrl = '';
+  @observable loggedIn = false;
 
   @action
   emailOnChange(id) {
@@ -51,12 +57,89 @@ class LoginStore {
   }
 
   @action
+  loginWithFireBase() {
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOroDOzuLCbqAwcoRz-LeVk_QqP4pLNuY",
+      authDomain: "test-auth-71147",
+      databaseURL: "https://test-auth-71147.firebaseio.com",
+      storageBucket: "test-auth-71147.appspot.com"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+
+    this.name = this.email
+
+    firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+
+  }
+
+  @action
+  loginWithVK() {
+    console.log('login vk')
+  }
+
+  @action
+  loginWithFB = async () => {
+    try {
+      const {
+        type,
+        token,
+        expires,
+        permissions,
+        declinedPermissions,
+      } = await Facebook.logInWithReadPermissionsAsync('278792199722618', {
+        permissions: ['public_profile'],
+      });
+      if (type === 'success') {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+        const userInfo = await response.json()
+        this.name = userInfo.name
+        this.photoUrl = userInfo.picture.data.url
+        this.loggedIn = true
+      } else {
+        // type === 'cancel'
+      }
+    } catch ({ message }) {
+      console.log('Error')
+    }
+    if (this.name.length > 0) return 'success'
+    else return null
+  }
+
+  @action
+  loginWithGoogle = async () => {
+    try {
+      const result = await Expo.Google.logInAsync({
+        androidClientId: '780661611757-cihhhp32qjp8kh2veqmkr8bifkpaf7h8.apps.googleusercontent.com',
+        scopes: ["profile", "email"]
+      })
+      if (result.type === "success") {
+          this.name = result.user.name,
+          this.photoUrl = result.user.photoUrl
+          this.loggedIn = true
+      } else {
+        console.log("cancelled")
+      }
+    } catch (e) {
+      console.log("error", e)
+    }
+    if (this.name.length > 0) return 'success'
+    else return null
+  }
+  
+
+  @action
   clearStore() {
     this.email = "";
     this.isValid = false;
     this.emailError = "";
     this.password = "";
     this.passwordError = "";
+    this.name = ""
+    this.photoUrl = ""
+    this.loggedIn = false
   }
 }
 

@@ -1,5 +1,5 @@
 {
-  "name": "ReactNativeSeed",
+  "name": "test-auth",
   "version": "1.2.0",
   "private": true,
   "devDependencies": {
@@ -14,7 +14,6 @@
     "babel-jest": "^23.6.0",
     "babel-preset-expo": "^5.0.0",
     "eslint": "5.11.0",
-    "husky": "1.2.1",
     "jest-expo": "31.0.0",
     "prettier": "^1.15.3",
     "react-test-renderer": "16.5.0",
@@ -30,8 +29,7 @@
     "ios": "expo ios",
     "android": "expo android",
     "lint": "tslint src/**/*.ts",
-    "test": "yarn jest && tslint src/**/*.tsx && eslint .",
-    "precommit": "yarn test"
+    "test": "yarn jest && tslint src/**/*.tsx && eslint ."
   },
   "jest": {
     "preset": "jest-expo",
@@ -51,12 +49,15 @@
   },
   "dependencies": {
     "expo": "^31.0.4",
+    "firebase": "^5.9.3",
+    "lint-staged": "^7.0.5",
     "lodash": "4.17.11",
     "mobx": "5.8.0",
     "mobx-react": "5.4.3",
     "native-base": "2.8.2",
     "react": "16.5.0",
     "react-native": "0.57.0",
+    "react-native-fbsdk": "^0.8.0",
     "react-navigation": "^2.18.2"
   }
 }
